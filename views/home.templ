@@ -1,0 +1,77 @@
+package views
+
+import (
+	"madlibs-htmx/common"
+)
+
+type HomeViewParams struct {
+	ValidationResult []common.FormField
+	MiscErrorMessage string
+}
+
+templ Home(params HomeViewParams) {
+	@BasePage("Madlibs") {
+		<main class="flex flex-col p-10 w-full">
+			@HomeForm(params)
+		</main>
+	}
+}
+
+func getFieldValue(fieldName string, params HomeViewParams) string {
+	for _, field := range params.ValidationResult {
+		if field.FieldName == fieldName {
+			return field.Value
+		}
+	}
+	return ""
+}
+
+func getParams(params HomeViewParams) string {
+	str := ""
+	for _, field := range params.ValidationResult {
+		str += field.FieldName + " " + field.Value + " " + field.ErrorMessage + "\n"
+	}
+	return str
+}
+
+templ HomeForm(params HomeViewParams) {
+	<form hx-post="/join-room" class="w-full flex flex-col gap-4" hx-swap="outerHTML">
+		<div class="w-full">
+			<label for="room_code" class="label-text label">Room code</label>
+			<input
+				type="text"
+				id="room_code"
+				name="room_code"
+				class="input input-bordered  w-full input-secondary "
+				placeholder="Enter room code"
+				value={ getFieldValue("room_code", params) }
+			/>
+			@ErrorText("room_code", params)
+		</div>
+		<div class="w-full">
+			<label for="username" class="label-text label">Name</label>
+			<input
+				id="username"
+				name="username"
+				class="input input-bordered w-full input-secondary "
+				placeholder="Enter your name"
+				value={ getFieldValue("username", params) }
+			/>
+			@ErrorText("username", params)
+		</div>
+		if params.MiscErrorMessage != "" {
+			<div class="text-error text-sm pt-1">{ params.MiscErrorMessage }</div>
+		}
+		<button type="submit" class="btn btn-primary">
+			Join room
+		</button>
+	</form>
+}
+
+templ ErrorText(fieldName string, params HomeViewParams) {
+	for _, field := range params.ValidationResult {
+		if field.FieldName == fieldName && field.ErrorMessage != "" {
+			<div class="text-error text-sm pt-1">{ field.ErrorMessage }</div>
+		}
+	}
+}

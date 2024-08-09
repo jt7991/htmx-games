@@ -1,0 +1,5 @@
+node_modules
+static/output.css
+tmp/build-errors.log
+tmp
+views/*_templ.go

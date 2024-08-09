@@ -1,0 +1,41 @@
+package views
+
+type ToastVariant string
+
+const (
+	ToastInfoVariant    ToastVariant = "info"
+	ToastSuccessVariant ToastVariant = "success"
+	ToastErrorVariant   ToastVariant = "error"
+)
+
+func getToastAlertClass(variant ToastVariant) string {
+	switch variant {
+	case ToastInfoVariant:
+		return "alert-info"
+	case ToastSuccessVariant:
+		return "alert-success"
+	case ToastErrorVariant:
+		return "alert-error"
+	default:
+		return "alert-info"
+	}
+}
+
+templ Toast(msg string, variant ToastVariant) {
+	<div hx-swap-oob="true" id="toast">
+		<script>
+  const toast = document.getElementById('toast');
+  toast.classList.remove('opacity-0');
+  toast.classList.add('opacity-100');
+  setTimeout(() => {
+    toast.classList.remove('opacity-100');
+    toast.classList.add('opacity-0');
+  }, 3000);
+ </script>
+		<div class="toast toast-center transition-opacity ease-out">
+			<div class={ "alert", getToastAlertClass(variant) }>
+				<span>{ msg }</span>
+			</div>
+		</div>
+	</div>
+}

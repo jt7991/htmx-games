@@ -1,0 +1,13 @@
+package views
+
+templ GamePage(gameName string, fullPage bool) {
+	if fullPage {
+		@BasePage(gameName) {
+			<div hx-ext="ws" ws-connect="/game/ws" hx-swap="innerHTML" target="self">
+				{ children... }
+			</div>
+		}
+	} else {
+		{ children... }
+	}
+}
